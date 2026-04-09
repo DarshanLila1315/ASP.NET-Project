@@ -60,6 +60,7 @@ The platform is optimized for performance and accessibility across multiple devi
 | Darshan Lila  | https://github.com/DarshanLila1315 |
 | Yug Sakariya  | https://github.com/yugsakariya     |
 | Yug Kansagara | https://github.com/Yugpatel009     |
+| Ruchit Kadeval | https://github.com/Yugpatel009     |
 
 ---
 
