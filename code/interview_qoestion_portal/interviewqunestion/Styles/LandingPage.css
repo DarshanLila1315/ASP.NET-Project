@@ -1,0 +1,264 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0a0a0a 0%, #151515 100%);
+    min-height: 100vh;
+    color: #e5e5e5;
+}
+
+/* Header Styles */
+.header {
+    background: #151515;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #252525;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.logo {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.site-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+/* ASP.NET LinkButton/Button styles need to override default link/button appearance */
+.btn-login {
+    background: transparent;
+    border: none;
+    color: #e5e5e5;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    transition: color 0.3s;
+    text-decoration: none;
+    /* Crucial for LinkButton */
+}
+
+.btn-login:hover {
+    color: #60a5fa;
+    text-decoration: none;
+}
+
+.btn-register {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    border: none;
+    padding: 0.625rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-decoration: none;
+    /* Crucial for LinkButton */
+    display: inline-block;
+    /* Treat LinkButton as a block for padding/sizing */
+}
+
+.btn-register:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    color: white;
+    /* Prevent color change on hover */
+    text-decoration: none;
+}
+
+/* Hero Section */
+.hero-section {
+    text-align: center;
+    padding: 4rem 2rem 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.tagline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: #60a5fa;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.target-icon {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #60a5fa;
+    border-radius: 50%;
+    position: relative;
+}
+
+.target-icon::after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #60a5fa;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.main-heading {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+.highlight {
+    color: #60a5fa;
+}
+
+.subtitle {
+    font-size: 1.125rem;
+    color: #a3a3a3;
+    max-width: 800px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.6;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    border: none;
+    padding: 1rem 2.5rem;
+    border-radius: 8px;
+    font-size: 1.125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    /* Crucial for LinkButton */
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+    color: white;
+    /* Prevent color change on hover */
+    text-decoration: none;
+}
+
+.btn-primary span {
+    /* Style for the chevron/arrow */
+    font-size: 1.2em;
+    line-height: 1;
+}
+
+.btn-secondary {
+    background: #1a1a1a;
+    color: #e5e5e5;
+    border: 2px solid #252525;
+    padding: 1rem 2.5rem;
+    border-radius: 8px;
+    font-size: 1.125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.2s;
+    text-decoration: none;
+    /* Crucial for LinkButton */
+    display: inline-block;
+    /* Treat LinkButton as a block for padding/sizing */
+}
+
+.btn-secondary:hover {
+    border-color: #3b82f6;
+    transform: translateY(-2px);
+    color: #ffffff;
+    /* Prevent color change on hover */
+    text-decoration: none;
+}
+
+/* Features Section */
+.features-section {
+    background: #151515;
+    padding: 4rem 2rem;
+    margin-top: 3rem;
+    border-top: 1px solid #252525;
+}
+
+.features-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.features-heading {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 1rem;
+}
+
+.features-subtitle {
+    font-size: 1.125rem;
+    color: #a3a3a3;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+    .main-heading {
+        font-size: 2.5rem;
+    }
+
+    .hero-section {
+        padding: 3rem 1.5rem 2rem;
+    }
+
+    .cta-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        width: 100%;
+    }
+}

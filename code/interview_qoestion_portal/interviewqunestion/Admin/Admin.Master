@@ -1,0 +1,685 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Admin.master.cs" 
+    Inherits="interviewqunestion.Admin.Admin" %>
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title><%: (Page.Title ?? "Dashboard") %> - IQ Admin Portal</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/png" href="../img/logo.png" />
+    <link rel="shortcut icon" href="../favicon.ico" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <asp:ContentPlaceHolder ID="head" runat="server"></asp:ContentPlaceHolder>
+
+    <link href="../Styles/Admin.css?v=10.0-final-fix" rel="stylesheet" />
+    
+    <style>
+        /* Dark Theme Logout Overlay Styles */
+        .logout-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0);
+            transition: background 0.5s ease;
+            pointer-events: none;
+            z-index: 9998;
+        }
+
+        .logout-overlay.active {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(12px);
+            pointer-events: all;
+        }
+
+        .logout-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 9999;
+            background: linear-gradient(135deg, rgba(17, 24, 39, 0.95), rgba(31, 41, 55, 0.95));
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 24px;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6), 0 0 40px rgba(59, 130, 246, 0.15);
+            backdrop-filter: blur(20px);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .logout-modal.active {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            pointer-events: all;
+        }
+
+        .logout-modal h3 {
+            color: #f9fafb;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .logout-modal p {
+            color: #9ca3af;
+            font-size: 1rem;
+        }
+
+        .logout-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(59, 130, 246, 0.2);
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Animated Logout Button */
+        .logoutButton {
+            --figure-duration: 100ms;
+            --transform-figure: none;
+            --walking-duration: 100ms;
+            --transform-arm1: none;
+            --transform-wrist1: none;
+            --transform-arm2: none;
+            --transform-wrist2: none;
+            --transform-leg1: none;
+            --transform-calf1: none;
+            --transform-leg2: none;
+            --transform-calf2: none;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            border: 0;
+            color: white;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: "Inter", sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            height: 44px;
+            outline: none;
+            padding: 0 16px 0 20px;
+            perspective: 100px;
+            position: relative;
+            text-align: left;
+            width: 140px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            transition: all 0.25s ease;
+            -webkit-tap-highlight-color: transparent;
+            overflow: hidden;
+        }
+
+        /* Mobile Logout Button */
+        @media (max-width: 768px) {
+            .logoutButton {
+                width: 130px;
+                height: 42px;
+                font-size: 0.85rem;
+                padding: 0 14px 0 18px;
+                border-radius: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logoutButton {
+                width: 120px;
+                height: 40px;
+                font-size: 0.8rem;
+                padding: 0 12px 0 16px;
+            }
+        }
+
+        .logoutButton::before {
+            background-color: transparent;
+            border-radius: 10px;
+            content: "";
+            display: block;
+            height: 100%;
+            left: 0;
+            position: absolute;
+            top: 0;
+            transform: none;
+            transition: transform 50ms ease;
+            width: 100%;
+            z-index: 2;
+        }
+
+        .logoutButton:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .logoutButton:hover .door {
+            transform: rotateY(20deg);
+        }
+
+        .logoutButton:active::before {
+            transform: scale(0.96);
+        }
+
+        .logoutButton:active .door {
+            transform: rotateY(28deg);
+        }
+
+        .logoutButton.clicked::before {
+            transform: none;
+        }
+
+        .logoutButton.clicked .door {
+            transform: rotateY(35deg);
+        }
+
+        .logoutButton.door-slammed .door {
+            transform: none;
+            transition: transform 100ms ease-in 250ms;
+        }
+
+        .logoutButton.falling {
+            animation: shake 200ms linear;
+        }
+
+        .logoutButton.falling .bang {
+            animation: flash 300ms linear;
+        }
+
+        .logoutButton.falling .figure {
+            animation: spin-figure 1000ms infinite linear;
+            bottom: -1080px;
+            opacity: 0;
+            right: 1px;
+            transition: transform calc(var(--figure-duration) * 1ms) linear, bottom calc(var(--figure-duration) * 1ms) cubic-bezier(0.7, 0.1, 1, 1) 100ms, opacity calc(var(--figure-duration) * 0.25ms) linear calc(var(--figure-duration) * 0.75ms);
+            z-index: 1;
+        }
+
+        .button-text {
+            color: white;
+            font-weight: 600;
+            position: relative;
+            z-index: 10;
+            line-height: 1;
+        }
+
+        .figure {
+            bottom: 8px;
+            fill: white;
+            right: 16px;
+            transform: var(--transform-figure);
+            transition: transform calc(var(--figure-duration) * 1ms) cubic-bezier(0.2, 0.1, 0.8, 0.9);
+            width: 24px;
+            height: 24px;
+            z-index: 4;
+            position: absolute;
+            display: block;
+        }
+
+        .door,
+        .doorway {
+            bottom: 8px;
+            fill: white;
+            right: 12px;
+            width: 26px;
+            height: 26px;
+            position: absolute;
+            display: block;
+        }
+
+        .door {
+            transform: rotateY(20deg);
+            transform-origin: 100% 50%;
+            transform-style: preserve-3d;
+            transition: transform 200ms ease;
+            z-index: 5;
+        }
+
+        .door path {
+            fill: #2563eb;
+            stroke: #2563eb;
+            stroke-width: 4;
+        }
+
+        .doorway {
+            z-index: 3;
+        }
+
+        .bang {
+            opacity: 0;
+        }
+
+        .arm1,
+        .wrist1,
+        .arm2,
+        .wrist2,
+        .leg1,
+        .calf1,
+        .leg2,
+        .calf2 {
+            transition: transform calc(var(--walking-duration) * 1ms) ease-in-out;
+        }
+
+        .arm1 {
+            transform: var(--transform-arm1);
+            transform-origin: 52% 45%;
+        }
+
+        .wrist1 {
+            transform: var(--transform-wrist1);
+            transform-origin: 59% 55%;
+        }
+
+        .arm2 {
+            transform: var(--transform-arm2);
+            transform-origin: 47% 43%;
+        }
+
+        .wrist2 {
+            transform: var(--transform-wrist2);
+            transform-origin: 35% 47%;
+        }
+
+        .leg1 {
+            transform: var(--transform-leg1);
+            transform-origin: 47% 64.5%;
+        }
+
+        .calf1 {
+            transform: var(--transform-calf1);
+            transform-origin: 55.5% 71.5%;
+        }
+
+        .leg2 {
+            transform: var(--transform-leg2);
+            transform-origin: 43% 63%;
+        }
+
+        .calf2 {
+            transform: var(--transform-calf2);
+            transform-origin: 41.5% 73%;
+        }
+
+        @keyframes spin-figure {
+            from {
+                transform: rotate(0deg) scale(0.94);
+            }
+
+            to {
+                transform: rotate(359deg) scale(0.94);
+            }
+        }
+
+        @keyframes shake {
+            0% {
+                transform: rotate(-1deg);
+            }
+
+            50% {
+                transform: rotate(2deg);
+            }
+
+            100% {
+                transform: rotate(-1deg);
+            }
+        }
+
+        @keyframes flash {
+            0% {
+                opacity: 0.4;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <form runat="server" id="form1">
+        
+        <!-- Logout Animation -->
+        <div id="logoutOverlay" class="logout-overlay">
+            <div id="logoutModal" class="logout-modal">
+                <div class="logout-spinner"></div>
+                <h3>Signing Out...</h3>
+                <p>Securely logging you out.</p>
+            </div>
+        </div>
+
+        <div class="admin-wrapper">
+
+            <!-- Sidebar Overlay -->
+            <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+            <!-- SIDEBAR -->
+            <div class="sidebar" id="sidebar">
+                <div class="sidebar-header">
+                    <a href="<%= ResolveUrl("~/Admin/AdminHome.aspx") %>" class="brand">
+                        <i class="fas fa-shield-halved"></i>
+                        <span>IQ Admin</span>
+                    </a>
+                    <button type="button" class="sidebar-close" onclick="closeSidebar()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="sidebar-nav">
+                    <asp:HyperLink ID="lnkDashboard" CssClass="nav-link" NavigateUrl="~/Admin/AdminHome.aspx" runat="server">
+                        <i class="fas fa-home"></i> <span>Dashboard</span>
+                    </asp:HyperLink>
+
+                    <asp:HyperLink ID="lnkCategories" CssClass="nav-link" NavigateUrl="~/Admin/ManageCategories.aspx" runat="server">
+                        <i class="fas fa-folder-open"></i> <span>Categories</span>
+                    </asp:HyperLink>
+
+                    <asp:HyperLink ID="lnkCompanies" CssClass="nav-link" NavigateUrl="~/Admin/ManageCompanies.aspx" runat="server">
+                        <i class="fas fa-building"></i> <span>Companies</span>
+                    </asp:HyperLink>
+
+                    <asp:HyperLink ID="lnkQuestions" CssClass="nav-link" NavigateUrl="~/Admin/ManageQuestions.aspx" runat="server">
+                        <i class="fas fa-question-circle"></i> <span>Questions</span>
+                    </asp:HyperLink>
+
+                    <asp:HyperLink ID="lnkTests" CssClass="nav-link" NavigateUrl="~/Admin/ManageTests.aspx" runat="server">
+                        <i class="fas fa-clipboard-list"></i> <span>Tests</span>
+                    </asp:HyperLink>
+
+                    <asp:HyperLink ID="lnkAssign" CssClass="nav-link" NavigateUrl="~/Admin/AssignQuestions.aspx" runat="server">
+                        <i class="fas fa-link"></i> <span>Assign Questions</span>
+                    </asp:HyperLink>
+
+                    <asp:HyperLink ID="lnkTestQuestions" CssClass="nav-link" NavigateUrl="~/Admin/TestQuestions.aspx" runat="server">
+                        <i class="fas fa-tasks"></i> <span>Test Questions</span>
+                    </asp:HyperLink>
+
+                    <asp:HyperLink ID="lnkAssignTests" CssClass="nav-link" NavigateUrl="~/Admin/AssignTests.aspx" runat="server">
+                        <i class="fas fa-user-check"></i> <span>Assign Tests</span>
+                    </asp:HyperLink>
+
+                    <asp:HyperLink ID="lnkResults" CssClass="nav-link" NavigateUrl="~/Admin/ViewTestResults.aspx" runat="server">
+                        <i class="fas fa-chart-bar"></i> <span>Results</span>
+                    </asp:HyperLink>
+
+                    <!-- Logout Button - Below Results -->
+                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                        <asp:LinkButton ID="btnLogout" runat="server"
+                            CssClass="logoutButton"
+                            OnClick="btnLogout_Click"
+                            OnClientClick="return handleLogoutAnimation();">
+                            <svg class="doorway" viewBox="0 0 100 100">
+                                <path d="M93.4 86.3H58.6c-1.9 0-3.4-1.5-3.4-3.4V17.1c0-1.9 1.5-3.4 3.4-3.4h34.8c1.9 0 3.4 1.5 3.4 3.4v65.8c0 1.9-1.5 3.4-3.4 3.4z" />
+                                <path class="bang" d="M40.5 43.7L26.6 31.4l-2.5 6.7zM41.9 50.4l-19.5-4-1.4 6.3zM40 57.4l-17.7 3.9 3.9 5.7z" />
+                            </svg>
+                            <svg class="figure" viewBox="0 0 100 100">
+                                <circle cx="52.1" cy="32.4" r="6.4" />
+                                <path d="M50.7 62.8c-1.2 2.5-3.6 5-7.2 4-3.2-.9-4.9-3.5-4-7.8.7-3.4 3.1-13.8 4.1-15.8 1.7-3.4 1.6-4.6 7-3.7 4.3.7 4.6 2.5 4.3 5.4-.4 3.7-2.8 15.1-4.2 17.9z" />
+                                <g class="arm1">
+                                    <path d="M55.5 56.5l-6-9.5c-1-1.5-.6-3.5.9-4.4 1.5-1 3.7-1.1 4.6.4l6.1 10c1 1.5.3 3.5-1.1 4.4-1.5.9-3.5.5-4.5-.9z" />
+                                    <path class="wrist1" d="M69.4 59.9L58.1 58c-1.7-.3-2.9-1.9-2.6-3.7.3-1.7 1.9-2.9 3.7-2.6l11.4 1.9c1.7.3 2.9 1.9 2.6 3.7-.4 1.7-2 2.9-3.8 2.6z" />
+                                </g>
+                                <g class="arm2">
+                                    <path d="M34.2 43.6L45 40.3c1.7-.6 3.5.3 4 2 .6 1.7-.3 4-2 4.5l-10.8 2.8c-1.7.6-3.5-.3-4-2-.6-1.6.3-3.4 2-4z" />
+                                    <path class="wrist2" d="M27.1 56.2L32 45.7c.7-1.6 2.6-2.3 4.2-1.6 1.6.7 2.3 2.6 1.6 4.2L33 58.8c-.7 1.6-2.6 2.3-4.2 1.6-1.7-.7-2.4-2.6-1.7-4.2z" />
+                                </g>
+                                <g class="leg1">
+                                    <path d="M52.1 73.2s-7-5.7-7.9-6.5c-.9-.9-1.2-3.5-.1-4.9 1.1-1.4 3.8-1.9 5.2-.9l7.9 7c1.4 1.1 1.7 3.5.7 4.9-1.1 1.4-4.4 1.5-5.8.4z" />
+                                    <path class="calf1" d="M52.6 84.4l-1-12.8c-.1-1.9 1.5-3.6 3.5-3.7 2-.1 3.7 1.4 3.8 3.4l1 12.8c.1 1.9-1.5 3.6-3.5 3.7-2 0-3.7-1.5-3.8-3.4z" />
+                                </g>
+                                <g class="leg2">
+                                    <path d="M37.8 72.7s1.3-10.2 1.6-11.4 2.4-2.8 4.1-2.6c1.7.2 3.6 2.3 3.4 4l-1.8 11.1c-.2 1.7-1.7 3.3-3.4 3.1-1.8-.2-4.1-2.4-3.9-4.2z" />
+                                    <path class="calf2" d="M29.5 82.3l9.6-10.9c1.3-1.4 3.6-1.5 5.1-.1 1.5 1.4.4 4.9-.9 6.3l-8.5 9.6c-1.3 1.4-3.6 1.5-5.1.1-1.4-1.3-1.5-3.5-.2-5z" />
+                                </g>
+                            </svg>
+                            <svg class="door" viewBox="0 0 100 100">
+                                <path d="M93.4 86.3H58.6c-1.9 0-3.4-1.5-3.4-3.4V17.1c0-1.9 1.5-3.4 3.4-3.4h34.8c1.9 0 3.4 1.5 3.4 3.4v65.8c0 1.9-1.5 3.4-3.4 3.4z" />
+                                <circle cx="66" cy="50" r="3.7" />
+                            </svg>
+                            <span class="button-text">Log Out</span>
+                        </asp:LinkButton>
+                    </div>
+                </div>
+
+                <!-- USER SECTION -->
+                <div class="user-section">
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            <asp:Label ID="lblUserInitial" runat="server" Text="A" />
+                        </div>
+                        <div>
+                            <asp:Label ID="lblUser" CssClass="user-name" runat="server" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div class="main-wrapper">
+
+                <div class="top-bar">
+                    <div class="d-flex align-items-center gap-3">
+                        <button type="button" class="mobile-toggle" id="hamburgerBtn" onclick="toggleSidebar()">
+                            <span class="hamburger-line"></span>
+                            <span class="hamburger-line"></span>
+                            <span class="hamburger-line"></span>
+                        </button>
+                        <span class="top-bar-title"><%: (Page.Title ?? "Dashboard") %></span>
+                    </div>
+                </div>
+
+                <div class="content-area">
+                    <div class="content-card">
+                        <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+                    </div>
+                </div>
+
+                <div class="footer">
+                    © <%: DateTime.Now.Year %> Interview Questions Portal - Admin Panel
+                </div>
+
+            </div>
+        </div>
+
+        <script>
+            function toggleSidebar() {
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('sidebarOverlay');
+                const hamburger = document.getElementById('hamburgerBtn');
+                
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+                hamburger.classList.toggle('active');
+                
+                document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+            }
+
+            function closeSidebar() {
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('sidebarOverlay');
+                const hamburger = document.getElementById('hamburgerBtn');
+                
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+                hamburger.classList.remove('active');
+                
+                document.body.style.overflow = '';
+            }
+
+            // Active Link Highlight
+            window.onload = function () {
+                let page = window.location.pathname.split("/").pop();
+                let links = document.querySelectorAll(".nav-link");
+
+                links.forEach(link => {
+                    if (link.getAttribute("href") && link.getAttribute("href").indexOf(page) !== -1) {
+                        link.classList.add("active");
+                    }
+                });
+            };
+
+            // Close sidebar on nav link click (mobile)
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth <= 992) {
+                        closeSidebar();
+                    }
+                });
+            });
+
+             // Logout Animation Handler
+            function handleLogoutAnimation() {
+                const button = document.querySelector('.logoutButton');
+                if (button && button.state !== 'animating') {
+                    animateLogoutButton(button);
+                }
+                return false;
+            }
+
+            function animateLogoutButton(button) {
+                button.state = 'animating';
+                
+                const logoutButtonStates = {
+                    'walking1': {
+                        '--figure-duration': '300',
+                        '--transform-figure': 'translateX(11px)',
+                        '--walking-duration': '300',
+                        '--transform-arm1': 'translateX(-4px) translateY(-2px) rotate(120deg)',
+                        '--transform-wrist1': 'rotate(-5deg)',
+                        '--transform-arm2': 'translateX(4px) rotate(-110deg)',
+                        '--transform-wrist2': 'rotate(-5deg)',
+                        '--transform-leg1': 'translateX(-3px) rotate(80deg)',
+                        '--transform-calf1': 'rotate(-30deg)',
+                        '--transform-leg2': 'translateX(4px) rotate(-60deg)',
+                        '--transform-calf2': 'rotate(20deg)'
+                    },
+                    'walking2': {
+                        '--figure-duration': '400',
+                        '--transform-figure': 'translateX(17px)',
+                        '--walking-duration': '300',
+                        '--transform-arm1': 'rotate(60deg)',
+                        '--transform-wrist1': 'rotate(-15deg)',
+                        '--transform-arm2': 'rotate(-45deg)',
+                        '--transform-wrist2': 'rotate(6deg)',
+                        '--transform-leg1': 'rotate(-5deg)',
+                        '--transform-calf1': 'rotate(10deg)',
+                        '--transform-leg2': 'rotate(10deg)',
+                        '--transform-calf2': 'rotate(-20deg)'
+                    },
+                    'falling1': {
+                        '--figure-duration': '1600',
+                        '--walking-duration': '400',
+                        '--transform-arm1': 'rotate(-60deg)',
+                        '--transform-wrist1': 'none',
+                        '--transform-arm2': 'rotate(30deg)',
+                        '--transform-wrist2': 'rotate(120deg)',
+                        '--transform-leg1': 'rotate(-30deg)',
+                        '--transform-calf1': 'rotate(-20deg)',
+                        '--transform-leg2': 'rotate(20deg)'
+                    },
+                    'falling2': {
+                        '--walking-duration': '300',
+                        '--transform-arm1': 'rotate(-100deg)',
+                        '--transform-arm2': 'rotate(-60deg)',
+                        '--transform-wrist2': 'rotate(60deg)',
+                        '--transform-leg1': 'rotate(80deg)',
+                        '--transform-calf1': 'rotate(20deg)',
+                        '--transform-leg2': 'rotate(-60deg)'
+                    },
+                    'falling3': {
+                        '--walking-duration': '500',
+                        '--transform-arm1': 'rotate(-30deg)',
+                        '--transform-wrist1': 'rotate(40deg)',
+                        '--transform-arm2': 'rotate(50deg)',
+                        '--transform-wrist2': 'none',
+                        '--transform-leg1': 'rotate(-30deg)',
+                        '--transform-leg2': 'rotate(20deg)',
+                        '--transform-calf2': 'none'
+                    }
+                };
+
+                let updateButtonState = (button, state) => {
+                    if (logoutButtonStates[state]) {
+                        for (let key in logoutButtonStates[state]) {
+                            button.style.setProperty(key, logoutButtonStates[state][key]);
+                        }
+                    }
+                };
+
+                button.classList.add('clicked');
+                updateButtonState(button, 'walking1');
+                
+                setTimeout(() => {
+                    button.classList.add('door-slammed');
+                    updateButtonState(button, 'walking2');
+                    
+                    setTimeout(() => {
+                        button.classList.add('falling');
+                        updateButtonState(button, 'falling1');
+                        
+                        setTimeout(() => {
+                            updateButtonState(button, 'falling2');
+                            
+                            setTimeout(() => {
+                                updateButtonState(button, 'falling3');
+                                
+                                setTimeout(() => {
+                                    showLogoutModal();
+                                    setTimeout(function() {
+                                        __doPostBack('<%= btnLogout.UniqueID %>', '');
+                                    }, 1000);
+                                }, 500);
+                            }, 300);
+                        }, 400);
+                    }, 400);
+                }, 300);
+            }
+
+            function showLogoutModal() {
+                const overlay = document.getElementById('logoutOverlay');
+                const modal = document.getElementById('logoutModal');
+                overlay.classList.add('active');
+                modal.classList.add('active');
+            }
+            document.addEventListener("DOMContentLoaded", function () {
+                // Get the main form
+                var myForm = document.getElementById("form1");
+
+                // If the form exists, look at the siblings after it
+                if (myForm) {
+                    var nextElement = myForm.nextElementSibling;
+
+                    // Loop through all elements after the form
+                    while (nextElement) {
+                        // Check if this element looks like the ad (high z-index or specific height)
+                        var style = window.getComputedStyle(nextElement);
+
+                        if (style.zIndex === "2147483647" || nextElement.style.height === "65px") {
+                            // Remove it from the DOM
+                            nextElement.style.display = "none";
+                        }
+
+                        // Move to the next sibling
+                        nextElement = nextElement.nextElementSibling;
+                    }
+                }
+            });
+        </script>
+    </form>
+</body>
+</html>
